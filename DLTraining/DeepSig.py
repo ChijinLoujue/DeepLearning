@@ -14,7 +14,6 @@ import cmath
 from deepSigInput import dsdata_input
 
 
-
 # 定义权重
 def weight_variable(shape):
     initial = tf.truncated_normal(shape, stddev=0.1)
@@ -84,14 +83,17 @@ learning_rate = 1e-4          #学习率
 cross_entropy = -tf.reduce_sum(y_ * tf.log(y_conv))   # 交叉熵
 train_step = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy)   # 迭代器
 
+
 correct_prediction = tf.equal(tf.argmax(y_conv, 1), tf.argmax(y_, 1))  # 正确率计算
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
 sess.run(tf.initialize_all_variables)
+
 
 training_epochs = 50
 batch_size = 10
 dsdata = dsdata_input()
 num_batch = int( dsdata./ batch_size)
+
 
 for i in range(num_batch):
     batch = mnist.train.next_batch(training_epochs)
@@ -99,6 +101,7 @@ for i in range(num_batch):
         train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: batch[1], keep_prob: 1.0})
         print("step %d,training accuracy %g" % (i, train_accuracy))
     train_step.run(feed_dict={x: batch[0], y_: batch[1], keep_prob: 0.5})
+
 
 print("test accuracy %g" % accuracy.eval(feed_dict={
     x: mnist.test.images, y_: mnist.test.labels, keep_prob: 1.0}))
